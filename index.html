@@ -42,6 +42,80 @@
   </footer>
 
   <script src="js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async function () {
+      const url = ' https://japceibal.github.io/japflix_api/movies-data.json'; // Cambia la ruta al archivo JSON
+      let peliculas = [];
+  
+      try {
+        // Cargar el archivo JSON
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error('Error al cargar el archivo JSON');
+        }
+        peliculas = await response.json();
+      } catch (error) {
+        console.error('Error al cargar el archivo JSON:', error);
+      }
+  
+      // Seleccionamos el botón y el input
+      const inputBuscar = document.getElementById('inputBuscar');
+      const btnBuscar = document.getElementById('btnBuscar');
+      const listaResultados = document.getElementById('lista');
+  
+      // Función para mostrar los resultados
+      function mostrarResultados(resultados) {
+        listaResultados.innerHTML = ''; // Limpiar los resultados anteriores
+  
+        if (resultados.length === 0) {
+          listaResultados.innerHTML = '<li class="list-group-item">No se encontraron resultados.</li>';
+          return;
+        }
+  
+        resultados.forEach(pelicula => {
+          // Crear el elemento HTML para cada resultado
+          const li = document.createElement('li');
+          li.classList.add('list-group-item', 'bg-dark', 'text-white');
+  
+          const estrellas = '★'.repeat(Math.round(pelicula.vote_average / 2)) + '☆'.repeat(5 - Math.round(pelicula.vote_average / 2));
+  
+          li.innerHTML = `
+            <h5>${pelicula.title}</h5>
+            <p>${pelicula.tagline}</p>
+            <p>${estrellas} (${pelicula.vote_average}/10)</p>
+          `;
+  
+          listaResultados.appendChild(li);
+        });
+      }
+  
+      // Escuchar el evento click del botón Buscar
+      btnBuscar.addEventListener('click', function () {
+  const query = inputBuscar.value.toLowerCase().trim(); // Obtener el valor de búsqueda y convertirlo a minúsculas
+
+  if (query) {
+    // Filtrar las películas por title, genres, tagline, o overview
+    const resultados = peliculas.filter(pelicula => {
+      // Asegúrate de que `pelicula.genres` sea un arreglo y que cada género sea una cadena
+      const genresMatch = Array.isArray(pelicula.genres) && pelicula.genres.some(g => typeof g === 'string' && g.toLowerCase().includes(query));
+
+      // Verificar el título, tagline, y overview
+      return (
+        pelicula.title.toLowerCase().includes(query) ||
+        genresMatch ||
+        (pelicula.tagline && pelicula.tagline.toLowerCase().includes(query)) ||
+        (pelicula.overview && pelicula.overview.toLowerCase().includes(query))
+      );
+    });
+
+    // Mostrar los resultados filtrados
+    mostrarResultados(resultados);
+  } else {
+    listaResultados.innerHTML = '<li class="list-group-item">Por favor, ingresa un término de búsqueda.</li>';
+  }
+});
+    });
+  </script>
 
 </body>
 
