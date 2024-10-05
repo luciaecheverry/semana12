@@ -37,14 +37,20 @@ document.addEventListener("DOMContentLoaded", async function () {
       });
   
       // Mostrar detalles adicionales
-      document.getElementById('infoAño').textContent = pelicula.release_date.split('-')[0]; // Año
-      document.getElementById('infoDuracion').textContent = pelicula.runtime; // Duración
-      document.getElementById('infoPresupuesto').textContent = pelicula.budget; // Presupuesto
-      document.getElementById('infoGanancias').textContent = pelicula.revenue; // Ganancias
+      document.getElementById('infoAño').textContent = pelicula.release_date.split('-')[0];
+      document.getElementById('infoDuracion').textContent = pelicula.runtime;
+      document.getElementById('infoPresupuesto').textContent = pelicula.budget;
+      document.getElementById('infoGanancias').textContent = pelicula.revenue; 
   
       // Agregar evento al botón "Mostrar detalles"
       btnDetalles.addEventListener('click', () => {
-        detallesPelicula.style.display = detallesPelicula.style.display === 'none' ? 'block' : 'none'; // Alterna la visibilidad del contenedor
+        if (detallesPelicula.style.display === 'none') {
+          detallesPelicula.style.display = 'block';  // Mostrar detalles
+          btnDetalles.textContent = 'Ocultar detalles';  // Cambiar el texto del botón
+        } else {
+          detallesPelicula.style.display = 'none';  // Ocultar detalles
+          btnDetalles.textContent = 'Mostrar detalles';  // Cambiar el texto del botón
+        }
       });
   
       // Asegurarnos de que el contenedor de información esté visible
@@ -109,6 +115,15 @@ document.addEventListener("DOMContentLoaded", async function () {
       } else {
         listaResultados.innerHTML = '<li class="list-group-item">Por favor, ingresa un término de búsqueda.</li>';
       }
+    });
+    
+    const btnCerrarInfo = document.getElementById('cerrarInfo');
+
+    btnCerrarInfo.addEventListener('click', () => {
+      infoPelicula.style.display = 'none';  
+      infoPelicula.classList.add('d-none'); 
+      detallesPelicula.style.display = 'none';  
+      btnDetalles.textContent = 'Mostrar detalles';  
     });
   });
   
